@@ -56,6 +56,10 @@
       <Project>{d0e8b60b-17c5-4015-8583-46085b90faca}</Project>
       <Name>Common</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SecurityManager\SecurityManager.csproj">
+      <Project>{C5DB563D-2268-4C54-A186-D282E52889CB}</Project>
+      <Name>SecurityManager</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
