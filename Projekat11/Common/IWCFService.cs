@@ -12,5 +12,13 @@ namespace Common
     {
         [OperationContract]
         bool CreateFile(string path);
+        [OperationContract]
+        bool DeleteFile(string path);
+
+        [OperationContract]
+        bool WriteInFile(string path, string content);
+
+        [OperationContract]
+        bool ReadFromFile(string path);
     }
 }
