@@ -26,6 +26,10 @@ namespace ClientApp
             {
                 allowed = factory.CreateFile(path);
                 Console.WriteLine("CreateFile() >> {0}", allowed);
+                if (allowed == false)
+                {
+                    Console.WriteLine("Fajl sa tim nazivom vec postoji.\n");
+                }
             }
             catch (Exception e)
             {
@@ -43,6 +47,10 @@ namespace ClientApp
             {
                 allowed = factory.DeleteFile(path);
                 Console.WriteLine("DeleteFile() >> {0}", allowed);
+                if (allowed == false)
+                {
+                    Console.WriteLine("Fajl sa tim nazivom ne postoji.\n");
+                }
             }
             catch (Exception e)
             {
@@ -52,14 +60,14 @@ namespace ClientApp
             return allowed;
         }
 
-        public bool ReadFromFile(string path)
+        public string ReadFromFile(string path)
         {
-            bool allowed = false;
+            string allowed = String.Empty;
 
             try
             {
                 allowed = factory.ReadFromFile(path);
-                Console.WriteLine("ReadFromFile() >> {0}", allowed);
+                Console.WriteLine("ReadFromFile() >> \n {0}", allowed);
             }
             catch (Exception e)
             {
@@ -69,9 +77,9 @@ namespace ClientApp
             return allowed;
         }
 
-        public bool WriteInFile(string path, string content)
+        public string WriteInFile(string path, string content)
         {
-            bool allowed = false;
+            string allowed = String.Empty;
 
             try
             {
