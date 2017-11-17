@@ -11,14 +11,14 @@ namespace Common
     public interface IWCFService
     {
         [OperationContract]
-        bool CreateFile(string path);
+        bool CreateFile(string fileName);
         [OperationContract]
-        bool DeleteFile(string path);
+        bool DeleteFile(string fileName);
 
         [OperationContract]
-        bool WriteInFile(string path, string content);
+        string WriteInFile(string fileName, string content);
 
         [OperationContract]
-        bool ReadFromFile(string path);
+        string ReadFromFile(string fileName);
     }
 }
