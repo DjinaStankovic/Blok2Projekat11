@@ -18,7 +18,7 @@ namespace ClientApp
             string input;
             string fileName;
             string content;
-
+            List<string[]> permissions = new List<string[]>();
             Console.WriteLine("Choose account:");
             Console.WriteLine("1. Client1");
             Console.WriteLine("2. Client2");
@@ -29,7 +29,7 @@ namespace ClientApp
             NetTcpBinding binding = new NetTcpBinding();
             string address = "net.tcp://localhost:27000/WCFService";
             string[] names = null;
-            string[] permissions = null;
+            string[] groups = null;
 
             List<X509Certificate2> certCollection = CertificationManager.GetCertificateFromStorage(StoreName.My, StoreLocation.LocalMachine);
             foreach (X509Certificate2 cert in certCollection)
@@ -38,14 +38,21 @@ namespace ClientApp
                 if (names[0] == user)
                 {
                     int size = names.Count() - 2;
-                    permissions = new string[size];
+                    groups = new string[size+1];
                     for (int i = 1; i < names.Count() - 1; i++)
                     {
-                        permissions[i - 1] = names[i];
+                        groups[i - 1] = names[i];
 
                     }
                 }
 
+            }
+            
+            
+            
+            foreach(string gr in groups)
+            {
+                permissions.Add(RolesConfiguration.RolesConfig.GetPermissions(gr)); 
             }
 
 

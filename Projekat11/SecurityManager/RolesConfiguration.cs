@@ -32,12 +32,12 @@ namespace SecurityManager
 
             public static string[] GetPermissions(string role)
             {
-
+                
                 switch (role)
                 {
-                    case "Admins": return AdminsPermissions;
-                    case "Readers": return ReadersPermissions;
-                    case "Writers": return WritersPermissions;
+                    case "admins": return AdminsPermissions;
+                    case "readers": return ReadersPermissions;
+                    case "writers": return WritersPermissions;
                     default: return Empty;
                 }
             }
