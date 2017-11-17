@@ -35,5 +35,67 @@ namespace ClientApp
             return allowed;
         }
 
+        public bool DeleteFile(string path)
+        {
+            bool allowed = false;
+
+            try
+            {
+                allowed = factory.DeleteFile(path);
+                Console.WriteLine("DeleteFile() >> {0}", allowed);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Error while trying to DeleteFile(). {0}", e.Message);
+            }
+
+            return allowed;
+        }
+
+        public bool ReadFromFile(string path)
+        {
+            bool allowed = false;
+
+            try
+            {
+                allowed = factory.ReadFromFile(path);
+                Console.WriteLine("ReadFromFile() >> {0}", allowed);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Error while trying to ReadFromFile(). {0}", e.Message);
+            }
+
+            return allowed;
+        }
+
+        public bool WriteInFile(string path, string content)
+        {
+            bool allowed = false;
+
+            try
+            {
+                allowed = factory.WriteInFile(path, content);
+                Console.WriteLine("WriteInFile() >> {0}", allowed);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Error while trying to WriteInFile(). {0}", e.Message);
+            }
+
+            return allowed;
+        }
+
+        public void Dispose()
+        {
+            if (factory != null)
+            {
+                factory = null;
+            }
+
+            this.Close();
+        }
+
+
     }
 }

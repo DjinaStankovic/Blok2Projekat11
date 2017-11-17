@@ -13,5 +13,20 @@ namespace ServiceApp
         {
             throw new NotImplementedException();
         }
+
+        public bool DeleteFile(string path)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool ReadFromFile(string path)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool WriteInFile(string path, string content)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
