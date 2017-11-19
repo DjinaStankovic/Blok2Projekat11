@@ -37,7 +37,7 @@ namespace SecurityManager
                 {
                     case "admins": return AdminsPermissions;
                     case "readers": return ReadersPermissions;
-                    case "writers": return WritersPermissions;
+                    case "writters": return WritersPermissions;
                     default: return Empty;
                 }
             }

@@ -18,6 +18,8 @@ namespace ServiceApp
 
         public bool CreateFile(string fileName)
         {
+
+            
             if (CheckRole(RolesConfiguration.Permissions.CreateFile.ToString()))
             {
                 string path = @"C:\Files\" + fileName + ".txt";
@@ -53,54 +55,71 @@ namespace ServiceApp
 
         public bool DeleteFile(string fileName)
         {
-            string path = @"C:\Files\" + fileName + ".txt";
-            try
+            if (CheckRole(RolesConfiguration.Permissions.DeleteFile.ToString()))
             {
-                if (File.Exists(path))
+                string path = @"C:\Files\" + fileName + ".txt";
+                try
                 {
-                    File.Delete(path);
-                    Console.WriteLine("Uspjesno ste obrisali fajl na lokaciji "+path);
-                    return true;
+                    if (File.Exists(path))
+                    {
+                        File.Delete(path);
+                        Console.WriteLine("Uspjesno ste obrisali fajl na lokaciji " + path);
+                        return true;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Fajl sa tim nazivom ne postoji.\n");
+                        return false;
+                    }
                 }
-                else
+                catch (Exception e)
                 {
-                    Console.WriteLine("Fajl sa tim nazivom ne postoji.\n");
+                    Console.WriteLine(e.ToString());
                     return false;
                 }
             }
-            catch (Exception e)
+            else
             {
-                Console.WriteLine(e.ToString());
+                Audit.DeleteFailed(Thread.CurrentPrincipal.Identity.Name);
                 return false;
+
             }
         }
 
         public string ReadFromFile(string fileName)
         {
-            string path = @"C:\Files\" + fileName + ".txt";
-            try
+            if (CheckRole(RolesConfiguration.Permissions.ReadFile.ToString()))
             {
-                if (File.Exists(path))
+                string path = @"C:\Files\" + fileName + ".txt";
+                try
                 {
-                    var content = string.Empty;
-                    Console.WriteLine("Uspjesno iscitavanje fajla.");
-                   using(StreamReader reader=new StreamReader(path))
+                    if (File.Exists(path))
                     {
-                        content = reader.ReadToEnd();
-                        reader.Close();  
+                        var content = string.Empty;
+                        Console.WriteLine("Uspjesno iscitavanje fajla.");
+                        using (StreamReader reader = new StreamReader(path))
+                        {
+                            content = reader.ReadToEnd();
+                            reader.Close();
+                        }
+                        return content;
                     }
-                    return content;
+                    else
+                    {
+                        Console.WriteLine("Fajl sa tim nazivom ne postoji.");
+                        return "Fajl sa tim nazivom ne postoji.";
+                    }
                 }
-                else
+                catch (Exception e)
                 {
-                    Console.WriteLine("Fajl sa tim nazivom ne postoji.");
-                    return "Fajl sa tim nazivom ne postoji.";
+                    Console.WriteLine(e.ToString());
+                    return e.ToString();
                 }
             }
-            catch (Exception e)
+            else
             {
-                Console.WriteLine(e.ToString());
-                return e.ToString();
+                Audit.ReadFromFileFailed(Thread.CurrentPrincipal.Identity.Name);
+                return "Neuspesno citanje";
             }
 
         }
@@ -129,31 +148,40 @@ namespace ServiceApp
 
         public string WriteInFile(string fileName, string content)
         {
-            string path = @"C:\Files\" + fileName + ".txt";
-            try
+            if (CheckRole(RolesConfiguration.Permissions.WriteInFile.ToString()))
             {
-                if (File.Exists(path))
-                {
-                   
-                    Console.WriteLine("Uspjesno pisanje u fajl.");
-                    
-                    File.AppendAllText(path," "+content);
-                    return "Uspjesno pisanje u fajl.";
-                }
-                else
-                {
-                    Console.WriteLine("Fajl sa tim nazivom ne postoji.");
-                    return "Fajl sa tim nazivom ne postoji.";
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.ToString());
-                return e.ToString();
-            }
 
+                string path = @"C:\Files\" + fileName + ".txt";
+                try
+                {
+                    if (File.Exists(path))
+                    {
+
+                        Console.WriteLine("Uspjesno pisanje u fajl.");
+
+                        File.AppendAllText(path, " " + content);
+                        return "Uspjesno pisanje u fajl.";
+                    }
+                    else
+                    {
+                        Console.WriteLine("Fajl sa tim nazivom ne postoji.");
+                        return "Fajl sa tim nazivom ne postoji.";
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.ToString());
+                    return e.ToString();
+                }
+
+            }
+            else
+            {
+                Audit.WriteInFileFailed(Thread.CurrentPrincipal.Identity.Name);
+                return "Neuspesno upisivanje u fajl";
+            }
         }
-
+       
         
     }
 }
