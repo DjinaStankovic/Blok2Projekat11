@@ -1,35 +1,51 @@
 ﻿using Common;
+using SecurityManager;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace ServiceApp
 {
     public class WCFService : IWCFService
     {
+        public List<string[]> PermList = new List<string[]>();
+        
+
         public bool CreateFile(string fileName)
         {
-            string path = @"C:\Temp\"+fileName+".txt";
-            try
+            if (CheckRole(RolesConfiguration.Permissions.CreateFile.ToString()))
             {
-                if (File.Exists(path))
+                string path = @"C:\Files\" + fileName + ".txt";
+                try
                 {
-                    Console.WriteLine("Fajl sa tim nazivom vec postoji.\n");
-                    return false;
-                }else
-                {
-                    using(FileStream fs = File.Create(path))
+                    if (File.Exists(path))
                     {
-                        Console.WriteLine("Uspjesno ste kreirali fajl na lokaciji: " + path);
-                        return true;
+                        Console.WriteLine("Fajl sa tim nazivom vec postoji.\n");
+                        return false;
+                    }
+                    else
+                    {
+                        using (FileStream fs = File.Create(path))
+                        {
+                            Console.WriteLine("Uspjesno ste kreirali fajl na lokaciji: " + path);
+                            return true;
+                        }
                     }
                 }
-            }catch(Exception e)
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.ToString());
+                    return false;
+                }
+            }
+            else
             {
-                Console.WriteLine(e.ToString());
+                Audit.CreateFailed(Thread.CurrentPrincipal.Identity.Name);
                 return false;
             }
            
@@ -37,7 +53,7 @@ namespace ServiceApp
 
         public bool DeleteFile(string fileName)
         {
-            string path = @"C:\Temp\" + fileName + ".txt";
+            string path = @"C:\Files\" + fileName + ".txt";
             try
             {
                 if (File.Exists(path))
@@ -61,7 +77,7 @@ namespace ServiceApp
 
         public string ReadFromFile(string fileName)
         {
-            string path = @"C:\Temp\" + fileName + ".txt";
+            string path = @"C:\Files\" + fileName + ".txt";
             try
             {
                 if (File.Exists(path))
@@ -88,10 +104,32 @@ namespace ServiceApp
             }
 
         }
+        
+        public void SendPerms(List<string[]> lista)
+        {
+            PermList = lista;
+        }
+
+        public bool CheckRole(string role)
+        {
+            foreach(string[] gr in PermList)
+            {
+                foreach(string a in gr)
+                {
+                    if(a==role)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+
 
         public string WriteInFile(string fileName, string content)
         {
-            string path = @"C:\Temp\" + fileName + ".txt";
+            string path = @"C:\Files\" + fileName + ".txt";
             try
             {
                 if (File.Exists(path))
@@ -114,11 +152,8 @@ namespace ServiceApp
                 return e.ToString();
             }
 
-
-
-
-
-
         }
+
+        
     }
 }

@@ -10,8 +10,8 @@ namespace SecurityManager
     public class Audit : IDisposable
     {
         private static EventLog customLog = null;
-        const string SourceName = "SecurtiyManager.Audit";
-        const string LogName = "NasLog";
+        const string SourceName = "SecurtiyManagerr.Audit";
+        const string LogName = "NoviLog";
 
         static Audit()
         {
@@ -42,7 +42,7 @@ namespace SecurityManager
             {
 
                 string message = String.Format("{0} korisnik nema permisiju da kreira fajl!", userName);
-                customLog.WriteEntry(message, EventLogEntryType.Information);
+                customLog.WriteEntry(message, EventLogEntryType.Error);
             }
 
         }
@@ -52,7 +52,7 @@ namespace SecurityManager
             if (customLog != null)
             {
                 string message = String.Format("{0} nema permisiju da obrise fajl!", userName);
-                customLog.WriteEntry(message, EventLogEntryType.Information);
+                customLog.WriteEntry(message, EventLogEntryType.Error);
             }
 
         }

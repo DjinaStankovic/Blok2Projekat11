@@ -21,11 +21,12 @@ namespace ClientApp
         public bool CreateFile(string path)
         {
             bool allowed = false;
+            factory.SendPerms(Program.permissions);
 
             try
             {
                 allowed = factory.CreateFile(path);
-                Console.WriteLine("CreateFile() >> {0}", allowed);
+                
                 if (allowed == false)
                 {
                     Console.WriteLine("Fajl sa tim nazivom vec postoji.\n");
@@ -42,7 +43,7 @@ namespace ClientApp
         public bool DeleteFile(string path)
         {
             bool allowed = false;
-
+            factory.SendPerms(Program.permissions);
             try
             {
                 allowed = factory.DeleteFile(path);
@@ -63,7 +64,7 @@ namespace ClientApp
         public string ReadFromFile(string path)
         {
             string allowed = String.Empty;
-
+            factory.SendPerms(Program.permissions);
             try
             {
                 allowed = factory.ReadFromFile(path);
@@ -80,7 +81,7 @@ namespace ClientApp
         public string WriteInFile(string path, string content)
         {
             string allowed = String.Empty;
-
+            factory.SendPerms(Program.permissions);
             try
             {
                 allowed = factory.WriteInFile(path, content);
@@ -104,6 +105,9 @@ namespace ClientApp
             this.Close();
         }
 
-
+        public void SendPerms(List<string[]> lista)
+        {
+            
+        }
     }
 }

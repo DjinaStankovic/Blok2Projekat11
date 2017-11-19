@@ -11,6 +11,8 @@ namespace ClientApp
 {
     class Program
     {
+        public static List<string[]> permissions;
+        
         static void Main(string[] args)
         {
           
@@ -18,7 +20,7 @@ namespace ClientApp
             string input;
             string fileName;
             string content;
-            List<string[]> permissions = new List<string[]>();
+            permissions = new List<string[]>();
             Console.WriteLine("Choose account:");
             Console.WriteLine("1. Client1");
             Console.WriteLine("2. Client2");
@@ -38,7 +40,7 @@ namespace ClientApp
                 if (names[0] == user)
                 {
                     int size = names.Count() - 2;
-                    groups = new string[size+1];
+                    groups = new string[size];
                     for (int i = 1; i < names.Count() - 1; i++)
                     {
                         groups[i - 1] = names[i];
@@ -47,8 +49,6 @@ namespace ClientApp
                 }
 
             }
-            
-            
             
             foreach(string gr in groups)
             {
