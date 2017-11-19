@@ -12,7 +12,7 @@ namespace ServiceApp
     {
         public bool CreateFile(string fileName)
         {
-            string path = @"C:\Temp\"+fileName+".txt";
+            string path = @"C:\Files\"+fileName+".txt";
             try
             {
                 if (File.Exists(path))
@@ -37,7 +37,7 @@ namespace ServiceApp
 
         public bool DeleteFile(string fileName)
         {
-            string path = @"C:\Temp\" + fileName + ".txt";
+            string path = @"C:\Files\" + fileName + ".txt";
             try
             {
                 if (File.Exists(path))
@@ -61,7 +61,7 @@ namespace ServiceApp
 
         public string ReadFromFile(string fileName)
         {
-            string path = @"C:\Temp\" + fileName + ".txt";
+            string path = @"C:\Files\" + fileName + ".txt";
             try
             {
                 if (File.Exists(path))
@@ -91,7 +91,7 @@ namespace ServiceApp
 
         public string WriteInFile(string fileName, string content)
         {
-            string path = @"C:\Temp\" + fileName + ".txt";
+            string path = @"C:\Files\" + fileName + ".txt";
             try
             {
                 if (File.Exists(path))
