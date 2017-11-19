@@ -107,7 +107,7 @@ namespace ServiceApp
                     else
                     {
                         Console.WriteLine("Fajl sa tim nazivom ne postoji.");
-                        return "Fajl sa tim nazivom ne postoji.";
+                        return "Neuspjesno citanje iz fajla!.";
                     }
                 }
                 catch (Exception e)
@@ -146,7 +146,7 @@ namespace ServiceApp
 
 
 
-        public string WriteInFile(string fileName, string content)
+        public bool WriteInFile(string fileName, string content)
         {
             if (CheckRole(RolesConfiguration.Permissions.WriteInFile.ToString()))
             {
@@ -160,25 +160,25 @@ namespace ServiceApp
                         Console.WriteLine("Uspjesno pisanje u fajl.");
 
                         File.AppendAllText(path, " " + content);
-                        return "Uspjesno pisanje u fajl.";
+                        return true;
                     }
                     else
                     {
                         Console.WriteLine("Fajl sa tim nazivom ne postoji.");
-                        return "Fajl sa tim nazivom ne postoji.";
+                        return false;
                     }
                 }
                 catch (Exception e)
                 {
                     Console.WriteLine(e.ToString());
-                    return e.ToString();
+                    return false;
                 }
 
             }
             else
             {
                 Audit.WriteInFileFailed(Thread.CurrentPrincipal.Identity.Name);
-                return "Neuspesno upisivanje u fajl";
+                return false;
             }
         }
        

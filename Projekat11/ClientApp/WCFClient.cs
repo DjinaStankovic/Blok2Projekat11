@@ -29,7 +29,7 @@ namespace ClientApp
                 
                 if (allowed == false)
                 {
-                    Console.WriteLine("Fajl sa tim nazivom vec postoji.\n");
+                    Console.WriteLine("Nesupjesno kreiranje fajla!\n");
                 }
             }
             catch (Exception e)
@@ -50,7 +50,7 @@ namespace ClientApp
                 Console.WriteLine("DeleteFile() >> {0}", allowed);
                 if (allowed == false)
                 {
-                    Console.WriteLine("Fajl sa tim nazivom ne postoji.\n");
+                    Console.WriteLine("Neuspjesno brisanje fajla.\n");
                 }
             }
             catch (Exception e)
@@ -78,14 +78,18 @@ namespace ClientApp
             return allowed;
         }
 
-        public string WriteInFile(string path, string content)
+        public bool WriteInFile(string path, string content)
         {
-            string allowed = String.Empty;
+            bool allowed = false;
             factory.SendPerms(Program.permissions);
             try
             {
                 allowed = factory.WriteInFile(path, content);
-                Console.WriteLine("WriteInFile() >> {0}", allowed);
+                Console.WriteLine("WriteInFile() >>\n");
+                if (!allowed)
+                {
+                    Console.WriteLine("Neuspjesno!");
+                }
             }
             catch (Exception e)
             {

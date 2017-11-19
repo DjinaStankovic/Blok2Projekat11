@@ -16,7 +16,7 @@ namespace Common
         bool DeleteFile(string fileName);
 
         [OperationContract]
-        string WriteInFile(string fileName, string content);
+        bool WriteInFile(string fileName, string content);
 
         [OperationContract]
         string ReadFromFile(string fileName);
