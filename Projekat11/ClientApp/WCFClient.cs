@@ -19,14 +19,14 @@ namespace ClientApp
             factory = this.CreateChannel();
         }
 
-        public bool CreateFile(string path)
+        public bool CreateFile(string path,string user)
         {
             bool allowed = false;
             factory.SendPerms(Program.user);
 
             try
             {
-                allowed = factory.CreateFile(path);
+                allowed = factory.CreateFile(path,Program.user);
                 Console.WriteLine("CreateFile() >> {0}", allowed);
             }
             catch (Exception e)
@@ -37,13 +37,13 @@ namespace ClientApp
             return allowed;
         }
 
-        public bool DeleteFile(string path)
+        public bool DeleteFile(string path,string user)
         {
             bool allowed = false;
             factory.SendPerms(Program.user);
             try
             {
-                allowed = factory.DeleteFile(path);
+                allowed = factory.DeleteFile(path,Program.user);
                 Console.WriteLine("DeleteFile() >> {0}", allowed);
             }
             catch (Exception e)
@@ -54,14 +54,14 @@ namespace ClientApp
             return allowed;
         }
 
-        public bool WriteInFile(string path, string content)
+        public bool WriteInFile(string path, string content,string user)
         {
-            string allowed = String.Empty;
+            bool allowed = false;
             //  factory.SendPerms(Program.permissions);
             factory.SendPerms(Program.user);
             try
             {
-                allowed = factory.WriteInFile(path, content);
+                allowed = factory.WriteInFile(path, content,Program.user);
                 Console.WriteLine("WriteInFile() >> {0}", allowed);
             }
             catch (Exception e)
@@ -72,13 +72,13 @@ namespace ClientApp
             return allowed;
         }
 
-        public string ReadFromFile(string path)
+        public string ReadFromFile(string path,string user)
         {
-            bool allowed = false;
+            string allowed = String.Empty;
             factory.SendPerms(Program.user);
             try
             {
-                allowed = factory.ReadFromFile(path);
+                allowed = factory.ReadFromFile(path,Program.user);
                 Console.WriteLine("ReadFromFile() >> \n {0}", allowed);
             }
             catch (Exception e)

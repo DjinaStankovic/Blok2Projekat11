@@ -16,7 +16,7 @@ namespace ServiceApp
         public static List<string[]> PermList = new List<string[]>();
         
 
-        public bool CreateFile(string fileName)
+        public bool CreateFile(string fileName,string user)
         {       
             if (CheckRole(RolesConfiguration.Permissions.CreateFile.ToString()))
             {
@@ -45,13 +45,13 @@ namespace ServiceApp
             }
             else
             {
-                Audit.CreateFailed(Thread.CurrentPrincipal.Identity.Name);
+                Audit.CreateFailed(user);
                 return false;
             }
            
         }
 
-        public bool DeleteFile(string fileName)
+        public bool DeleteFile(string fileName,string user)
         {
             if (CheckRole(RolesConfiguration.Permissions.DeleteFile.ToString()))
             {
@@ -78,13 +78,14 @@ namespace ServiceApp
             }
             else
             {
-                Audit.DeleteFailed(Thread.CurrentPrincipal.Identity.Name);
+                //Audit.DeleteFailed(Thread.CurrentPrincipal.Identity.Name);
+                Audit.DeleteFailed(user);
                 return false;
 
             }
         }
 
-        public bool WriteInFile(string fileName, string content)
+        public bool WriteInFile(string fileName, string content,string user)
         {
             if (CheckRole(RolesConfiguration.Permissions.WriteInFile.ToString()))
             {
@@ -115,12 +116,13 @@ namespace ServiceApp
             }
             else
             {
-                Audit.WriteInFileFailed(Thread.CurrentPrincipal.Identity.Name);
+                //  Audit.WriteInFileFailed(Thread.CurrentPrincipal.Identity.Name);
+                Audit.WriteInFileFailed(user);
                 return false;
             }
         }
 
-        public string ReadFromFile(string fileName)
+        public string ReadFromFile(string fileName,string user)
         {
             if (CheckRole(RolesConfiguration.Permissions.ReadFile.ToString()))
             {
@@ -152,8 +154,8 @@ namespace ServiceApp
             }
             else
             {
-                Audit.ReadFromFileFailed(Thread.CurrentPrincipal.Identity.Name);
-                return "Neuspesno citanje";
+                Audit.ReadFromFileFailed(user);
+                return "Neuspjesno citanje";
             }
 
         }

@@ -33,8 +33,8 @@ namespace ClientApp
 
             NetTcpBinding binding = new NetTcpBinding();
             string address = "net.tcp://localhost:27000/WCFService";
-            string[] names = null;
-            string[] groups = null;
+            //string[] names = null;
+            //string[] groups = null;
 
             //List<X509Certificate2> certCollection = CertificationManager.GetCertificateFromStorage(StoreName.My, StoreLocation.LocalMachine);
             //foreach (X509Certificate2 cert in certCollection)
@@ -78,12 +78,12 @@ namespace ClientApp
                         case "1":
                             Console.WriteLine("-Unesite naziv fajla koji zelite da kreirate: ");
                             fileName = Console.ReadLine();
-                            proxy.CreateFile(fileName);
+                            proxy.CreateFile(fileName,user);
                             break;
                         case "2":
                             Console.WriteLine("-Unesite naziv fajla za brisanje: ");
                             fileName = Console.ReadLine();
-                            proxy.DeleteFile(fileName);
+                            proxy.DeleteFile(fileName,user);
                             break;
                         case "3":
                             bool file = false;
@@ -98,14 +98,14 @@ namespace ClientApp
                             {
                                 Console.WriteLine("-Unesite sadrzaj koji zelite da upisete u fajl: ");
                                 content = Console.ReadLine();
-                                proxy.WriteInFile(fileName, content);
+                                proxy.WriteInFile(fileName, content,user);
                             }
 
                             break;
                         case "4":
                             Console.WriteLine("-Unesite naziv fajla koji zelite da procitate: ");
                             fileName = Console.ReadLine();
-                            proxy.ReadFromFile(fileName);
+                            proxy.ReadFromFile(fileName,user);
                             break;
                         
                         default:
