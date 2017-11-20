@@ -64,6 +64,7 @@ namespace ClientApp
                 
                 while (true)
                 {
+                    Console.WriteLine("OVOO: "+Environment.MachineName);
                     Console.WriteLine("\n-------OPCIJE-------");
                     Console.WriteLine("1.Kreiranje fajla.");
                     Console.WriteLine("2.Brisanje fajla.");
