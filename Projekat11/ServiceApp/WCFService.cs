@@ -17,9 +17,7 @@ namespace ServiceApp
         
 
         public bool CreateFile(string fileName)
-        {
-
-            
+        {       
             if (CheckRole(RolesConfiguration.Permissions.CreateFile.ToString()))
             {
                 string path = @"C:\Files\" + fileName + ".txt";
@@ -86,6 +84,42 @@ namespace ServiceApp
             }
         }
 
+        public bool WriteInFile(string fileName, string content)
+        {
+            if (CheckRole(RolesConfiguration.Permissions.WriteInFile.ToString()))
+            {
+
+                string path = @"C:\Files\" + fileName + ".txt";
+                try
+                {
+                    if (File.Exists(path))
+                    {
+
+                        Console.WriteLine("Uspjesno pisanje u fajl.");
+
+                        File.AppendAllText(path, " " + content);
+                        return true;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Fajl sa tim nazivom ne postoji.");
+                        return false;
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.ToString());
+                    return false;
+                }
+
+            }
+            else
+            {
+                Audit.WriteInFileFailed(Thread.CurrentPrincipal.Identity.Name);
+                return false;
+            }
+        }
+
         public string ReadFromFile(string fileName)
         {
             if (CheckRole(RolesConfiguration.Permissions.ReadFile.ToString()))
@@ -123,7 +157,8 @@ namespace ServiceApp
             }
 
         }
-        
+
+
         public void SendPerms(List<string[]> lista)
         {
             PermList = lista;
@@ -131,11 +166,11 @@ namespace ServiceApp
 
         public bool CheckRole(string role)
         {
-            foreach(string[] gr in PermList)
+            foreach (string[] gr in PermList)
             {
-                foreach(string a in gr)
+                foreach (string a in gr)
                 {
-                    if(a==role)
+                    if (a == role)
                     {
                         return true;
                     }
@@ -145,43 +180,5 @@ namespace ServiceApp
         }
 
 
-
-        public bool WriteInFile(string fileName, string content)
-        {
-            if (CheckRole(RolesConfiguration.Permissions.WriteInFile.ToString()))
-            {
-
-                string path = @"C:\Files\" + fileName + ".txt";
-                try
-                {
-                    if (File.Exists(path))
-                    {
-
-                        Console.WriteLine("Uspjesno pisanje u fajl.");
-
-                        File.AppendAllText(path, " " + content);
-                        return true;
-                    }
-                    else
-                    {
-                        Console.WriteLine("Fajl sa tim nazivom ne postoji.");
-                        return false;
-                    }
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e.ToString());
-                    return false;
-                }
-
-            }
-            else
-            {
-                Audit.WriteInFileFailed(Thread.CurrentPrincipal.Identity.Name);
-                return false;
-            }
-        }
-       
-        
     }
 }

@@ -26,11 +26,7 @@ namespace ClientApp
             try
             {
                 allowed = factory.CreateFile(path);
-                
-                if (allowed == false)
-                {
-                    Console.WriteLine("Nesupjesno kreiranje fajla!\n");
-                }
+                Console.WriteLine("CreateFile() >> {0}", allowed);
             }
             catch (Exception e)
             {
@@ -44,14 +40,11 @@ namespace ClientApp
         {
             bool allowed = false;
             factory.SendPerms(Program.permissions);
+
             try
             {
                 allowed = factory.DeleteFile(path);
                 Console.WriteLine("DeleteFile() >> {0}", allowed);
-                if (allowed == false)
-                {
-                    Console.WriteLine("Neuspjesno brisanje fajla.\n");
-                }
             }
             catch (Exception e)
             {
@@ -61,10 +54,29 @@ namespace ClientApp
             return allowed;
         }
 
+        public bool WriteInFile(string path, string content)
+        {
+            bool allowed = false;
+            factory.SendPerms(Program.permissions);
+
+            try
+            {
+                allowed = factory.WriteInFile(path, content);
+                Console.WriteLine("WriteInFile() >> {0}", allowed);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Error while trying to WriteInFile(). {0}", e.Message);
+            }
+
+            return allowed;
+        }
+
         public string ReadFromFile(string path)
         {
             string allowed = String.Empty;
             factory.SendPerms(Program.permissions);
+
             try
             {
                 allowed = factory.ReadFromFile(path);
@@ -73,27 +85,6 @@ namespace ClientApp
             catch (Exception e)
             {
                 Console.WriteLine("Error while trying to ReadFromFile(). {0}", e.Message);
-            }
-
-            return allowed;
-        }
-
-        public bool WriteInFile(string path, string content)
-        {
-            bool allowed = false;
-            factory.SendPerms(Program.permissions);
-            try
-            {
-                allowed = factory.WriteInFile(path, content);
-                Console.WriteLine("WriteInFile() >>\n");
-                if (!allowed)
-                {
-                    Console.WriteLine("Neuspjesno!");
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("Error while trying to WriteInFile(). {0}", e.Message);
             }
 
             return allowed;
@@ -113,5 +104,6 @@ namespace ClientApp
         {
             
         }
+
     }
 }

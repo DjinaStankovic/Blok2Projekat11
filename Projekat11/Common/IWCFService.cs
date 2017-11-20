@@ -22,5 +22,6 @@ namespace Common
         string ReadFromFile(string fileName);
         [OperationContract]
         void SendPerms(List<string[]> lista);
+
     }
 }
