@@ -1,4 +1,5 @@
 ﻿using Common;
+using ServiceApp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,7 +22,7 @@ namespace ClientApp
         public bool CreateFile(string path)
         {
             bool allowed = false;
-            factory.SendPerms(Program.permissions);
+            factory.SendPerms(Program.user);
 
             try
             {
@@ -43,7 +44,7 @@ namespace ClientApp
         public bool DeleteFile(string path)
         {
             bool allowed = false;
-            factory.SendPerms(Program.permissions);
+            factory.SendPerms(Program.user);
             try
             {
                 allowed = factory.DeleteFile(path);
@@ -64,7 +65,8 @@ namespace ClientApp
         public string ReadFromFile(string path)
         {
             string allowed = String.Empty;
-            factory.SendPerms(Program.permissions);
+            //  factory.SendPerms(Program.permissions);
+            factory.SendPerms(Program.user);
             try
             {
                 allowed = factory.ReadFromFile(path);
@@ -81,7 +83,7 @@ namespace ClientApp
         public bool WriteInFile(string path, string content)
         {
             bool allowed = false;
-            factory.SendPerms(Program.permissions);
+            factory.SendPerms(Program.user);
             try
             {
                 allowed = factory.WriteInFile(path, content);
@@ -109,9 +111,9 @@ namespace ClientApp
             this.Close();
         }
 
-        public void SendPerms(List<string[]> lista)
+        public void SendPerms(string user)
         {
-            
+
         }
     }
 }
