@@ -13,7 +13,7 @@ namespace ServiceApp
 {
     public class WCFService : IWCFService
     {
-        public List<string[]> PermList = new List<string[]>();
+        public static List<string[]> PermList = new List<string[]>();
         
 
         public bool CreateFile(string fileName)
@@ -157,11 +157,33 @@ namespace ServiceApp
             }
 
         }
-
-
-        public void SendPerms(List<string[]> lista)
+        
+        public void SendPerms(string user)
         {
-            PermList = lista;
+            string[] names = null;
+            string[] groups = null;
+            // PermList = lista;
+            List<X509Certificate2> certCollection = CertificationManager.GetCertificateFromStorage(StoreName.My, StoreLocation.LocalMachine);
+            foreach (X509Certificate2 cert in certCollection)
+            {
+                names = cert.Subject.Split('_');
+                if (names[0] == user)
+                {
+                    int size = names.Count() - 2;
+                    groups = new string[size];
+                    for (int i = 1; i < names.Count() - 1; i++)
+                    {
+                        groups[i - 1] = names[i];
+
+                    }
+                }
+
+            }
+
+            foreach (string gr in groups)
+            {
+                PermList.Add(RolesConfiguration.RolesConfig.GetPermissions(gr));
+            }
         }
 
         public bool CheckRole(string role)
