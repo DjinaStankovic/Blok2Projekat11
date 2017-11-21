@@ -60,12 +60,12 @@ namespace SecurityManager
 
 
 
-        public static void WriteInFileFailed(string userName)
+        public static void WriteInFileFailed(string user)
         {
 
             if (customLog != null)
             {
-                string message = String.Format("{0} nema permisiju da upisuje u fajl!", userName);
+                string message = String.Format("{0} nema permisiju da upisuje u fajl!",user );
                 customLog.WriteEntry(message, EventLogEntryType.Error);
             }
 
