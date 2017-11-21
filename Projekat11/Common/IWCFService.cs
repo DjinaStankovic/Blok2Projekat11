@@ -21,6 +21,6 @@ namespace Common
         [OperationContract]
         string ReadFromFile(string fileName);
         [OperationContract]
-        void SendPerms(string user);
+        void SendUser(string user);
     }
 }

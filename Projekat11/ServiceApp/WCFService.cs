@@ -13,8 +13,8 @@ namespace ServiceApp
 {
     public class WCFService : IWCFService
     {
-        public static List<string[]> PermList = new List<string[]>();
-        
+        public List<string[]> PermList = new List<string[]>();
+        public string User = String.Empty;
 
         public bool CreateFile(string fileName)
         {
@@ -47,7 +47,7 @@ namespace ServiceApp
             }
             else
             {
-                Audit.CreateFailed(Thread.CurrentPrincipal.Identity.Name);
+                Audit.CreateFailed(User);
                 return false;
             }
            
@@ -80,7 +80,7 @@ namespace ServiceApp
             }
             else
             {
-                Audit.DeleteFailed(Thread.CurrentPrincipal.Identity.Name);
+                Audit.DeleteFailed(User);
                 return false;
 
             }
@@ -118,22 +118,23 @@ namespace ServiceApp
             }
             else
             {
-                Audit.ReadFromFileFailed(Thread.CurrentPrincipal.Identity.Name);
+                Audit.ReadFromFileFailed(User);
                 return "Neuspesno citanje";
             }
 
         }
         
-        public void SendPerms(string user)
+        public void SendUser(string user)
         {
+            this.User = user;
             string[] names = null;
             string[] groups = null;
-            // PermList = lista;
+            string userCN = String.Format("CN={0}", user);
             List<X509Certificate2> certCollection = CertificationManager.GetCertificateFromStorage(StoreName.My, StoreLocation.LocalMachine);
             foreach (X509Certificate2 cert in certCollection)
             {
                 names = cert.Subject.Split('_');
-                if (names[0] == user)
+                if (names[0] == userCN)
                 {
                     int size = names.Count() - 2;
                     groups = new string[size];
@@ -146,6 +147,7 @@ namespace ServiceApp
 
             }
 
+            PermList.Clear();
             foreach (string gr in groups)
             {
                 PermList.Add(RolesConfiguration.RolesConfig.GetPermissions(gr));
@@ -200,7 +202,7 @@ namespace ServiceApp
             }
             else
             {
-                Audit.WriteInFileFailed(Thread.CurrentPrincipal.Identity.Name);
+                Audit.WriteInFileFailed(User);
                 return false;
             }
         }

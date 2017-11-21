@@ -15,51 +15,27 @@ namespace ClientApp
         public static string user;
         static void Main(string[] args)
         {
-          
-            
+
+            string srvCertCN = "wcfservice";
             string input;
             string fileName;
             string content;
-          //  permissions = new List<string[]>();
             Console.WriteLine("Choose account:");
             Console.WriteLine("1. Client1");
             Console.WriteLine("2. Client2");
             Console.WriteLine("3. Client3");
             int izbor = Convert.ToInt32(Console.ReadLine());
-            //string user = LoggedUser(izbor);
             user = LoggedUser(izbor);
 
             NetTcpBinding binding = new NetTcpBinding();
-            string address = "net.tcp://localhost:27000/WCFService";
-            string[] names = null;
-            string[] groups = null;
+            binding.Security.Transport.ClientCredentialType = TcpClientCredentialType.Certificate;
+            X509Certificate2 srvCert = CertificationManager.GetSingleCertificate(StoreName.My, StoreLocation.LocalMachine, srvCertCN);
+            EndpointAddress address = new EndpointAddress(new Uri("net.tcp://localhost:1/WCFService"),
+                                      new X509CertificateEndpointIdentity(srvCert));
 
-            //List<X509Certificate2> certCollection = CertificationManager.GetCertificateFromStorage(StoreName.My, StoreLocation.LocalMachine);
-            //foreach (X509Certificate2 cert in certCollection)
-            //{
-            //    names = cert.Subject.Split('_');
-            //    if (names[0] == user)
-            //    {
-            //        int size = names.Count() - 2;
-            //        groups = new string[size];
-            //        for (int i = 1; i < names.Count() - 1; i++)
-            //        {
-            //            groups[i - 1] = names[i];
-
-            //        }
-            //    }
-
-            //}
-            
-            //foreach(string gr in groups)
-            //{
-            //    permissions.Add(RolesConfiguration.RolesConfig.GetPermissions(gr)); 
-            //}
-
-
-            using (WCFClient proxy = new WCFClient(binding, new EndpointAddress(new Uri(address))))
+            using (WCFClient proxy = new WCFClient(binding, address))
             {
-                
+
                 while (true)
                 {
                     Console.WriteLine("\n-------OPCIJE-------");
@@ -70,7 +46,7 @@ namespace ClientApp
                     Console.WriteLine("Vas izbor je: ");
                     input = Console.ReadLine();
                     Console.WriteLine("--------------------");
-
+                    
                     switch (input)
                     {
                         case "1":
@@ -93,7 +69,7 @@ namespace ClientApp
                             fileName = Console.ReadLine();
                             Console.WriteLine("Unesite sadrzaj koji zelite da upisete u fajl: ");
                             content = Console.ReadLine();
-                            proxy.WriteInFile(fileName,content);
+                            proxy.WriteInFile(fileName, content);
                             break;
                         default:
                             break;
@@ -112,13 +88,13 @@ namespace ClientApp
             switch (a)
             {
                 case 1:
-                    ret = "CN=wcfclient1";
+                    ret = "wcfclient1";
                     break;
                 case 2:
-                    ret = "CN=wcfclient2";
+                    ret = "wcfclient2";
                     break;
                 case 3:
-                    ret = "CN=wcfclient3";
+                    ret = "wcfclient3";
                     break;
             }
             return ret;

@@ -1,8 +1,10 @@
 ﻿using Common;
+using SecurityManager;
 using ServiceApp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.ServiceModel;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,13 +18,17 @@ namespace ClientApp
         public WCFClient(NetTcpBinding binding, EndpointAddress address)
             : base(binding, address)
         {
+            this.Credentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.Custom;
+            this.Credentials.ServiceCertificate.Authentication.CustomCertificateValidator = new ClientCertValidator();
+            this.Credentials.ServiceCertificate.Authentication.RevocationMode = X509RevocationMode.NoCheck;
+            this.Credentials.ClientCertificate.Certificate = CertificationManager.GetSingleCertificate(StoreName.My, StoreLocation.LocalMachine,Program.user);
             factory = this.CreateChannel();
         }
 
         public bool CreateFile(string path)
         {
             bool allowed = false;
-            factory.SendPerms(Program.user);
+            factory.SendUser(Program.user);
 
             try
             {
@@ -44,7 +50,7 @@ namespace ClientApp
         public bool DeleteFile(string path)
         {
             bool allowed = false;
-            factory.SendPerms(Program.user);
+            factory.SendUser(Program.user);
             try
             {
                 allowed = factory.DeleteFile(path);
@@ -65,8 +71,7 @@ namespace ClientApp
         public string ReadFromFile(string path)
         {
             string allowed = String.Empty;
-            //  factory.SendPerms(Program.permissions);
-            factory.SendPerms(Program.user);
+            factory.SendUser(Program.user);
             try
             {
                 allowed = factory.ReadFromFile(path);
@@ -83,7 +88,7 @@ namespace ClientApp
         public bool WriteInFile(string path, string content)
         {
             bool allowed = false;
-            factory.SendPerms(Program.user);
+            factory.SendUser(Program.user);
             try
             {
                 allowed = factory.WriteInFile(path, content);
@@ -111,7 +116,7 @@ namespace ClientApp
             this.Close();
         }
 
-        public void SendPerms(string user)
+        public void SendUser(string user)
         {
 
         }
