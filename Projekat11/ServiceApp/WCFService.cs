@@ -164,7 +164,7 @@ namespace ServiceApp
         {
             string[] names = null;
             string[] groups = null;
-            // PermList = lista;
+            PermList = new List<string[]>();
             List<X509Certificate2> certCollection = CertificationManager.GetCertificateFromStorage(StoreName.My, StoreLocation.LocalMachine);
             foreach (X509Certificate2 cert in certCollection)
             {
