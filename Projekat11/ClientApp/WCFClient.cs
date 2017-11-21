@@ -1,8 +1,10 @@
 ﻿using Common;
+using SecurityManager;
 using ServiceApp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.ServiceModel;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,18 +18,26 @@ namespace ClientApp
         public WCFClient(NetTcpBinding binding, EndpointAddress address)
             : base(binding, address)
         {
+            this.Credentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.Custom;
+            this.Credentials.ServiceCertificate.Authentication.CustomCertificateValidator = new ClientCertValidator();
+            this.Credentials.ServiceCertificate.Authentication.RevocationMode = X509RevocationMode.NoCheck;
+            this.Credentials.ClientCertificate.Certificate = CertificationManager.GetSingleCertificate(StoreName.My, StoreLocation.LocalMachine,Program.user);
             factory = this.CreateChannel();
         }
 
-        public bool CreateFile(string path,string user)
+        public bool CreateFile(string path)
         {
             bool allowed = false;
-            factory.SendPerms(Program.user);
+            factory.SendUser(Program.user);
 
             try
             {
-                allowed = factory.CreateFile(path,Program.user);
-                Console.WriteLine("CreateFile() >> {0}", allowed);
+                allowed = factory.CreateFile(path);
+                
+                if (allowed == false)
+                {
+                    Console.WriteLine("Nesupjesno kreiranje fajla!\n");
+                }
             }
             catch (Exception e)
             {
@@ -37,14 +47,18 @@ namespace ClientApp
             return allowed;
         }
 
-        public bool DeleteFile(string path,string user)
+        public bool DeleteFile(string path)
         {
             bool allowed = false;
-            factory.SendPerms(Program.user);
+            factory.SendUser(Program.user);
             try
             {
-                allowed = factory.DeleteFile(path,Program.user);
+                allowed = factory.DeleteFile(path);
                 Console.WriteLine("DeleteFile() >> {0}", allowed);
+                if (allowed == false)
+                {
+                    Console.WriteLine("Neuspjesno brisanje fajla.\n");
+                }
             }
             catch (Exception e)
             {
@@ -54,36 +68,39 @@ namespace ClientApp
             return allowed;
         }
 
-        public bool WriteInFile(string path, string content,string user)
-        {
-            bool allowed = false;
-            //  factory.SendPerms(Program.permissions);
-            factory.SendPerms(Program.user);
-            try
-            {
-                allowed = factory.WriteInFile(path, content,Program.user);
-                Console.WriteLine("WriteInFile() >> {0}", allowed);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("Error while trying to WriteInFile(). {0}", e.Message);
-            }
-
-            return allowed;
-        }
-
-        public string ReadFromFile(string path,string user)
+        public string ReadFromFile(string path)
         {
             string allowed = String.Empty;
-            factory.SendPerms(Program.user);
+            factory.SendUser(Program.user);
             try
             {
-                allowed = factory.ReadFromFile(path,Program.user);
+                allowed = factory.ReadFromFile(path);
                 Console.WriteLine("ReadFromFile() >> \n {0}", allowed);
             }
             catch (Exception e)
             {
                 Console.WriteLine("Error while trying to ReadFromFile(). {0}", e.Message);
+            }
+
+            return allowed;
+        }
+
+        public bool WriteInFile(string path, string content)
+        {
+            bool allowed = false;
+            factory.SendUser(Program.user);
+            try
+            {
+                allowed = factory.WriteInFile(path, content);
+                Console.WriteLine("WriteInFile() >>\n");
+                if (!allowed)
+                {
+                    Console.WriteLine("Neuspjesno!");
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Error while trying to WriteInFile(). {0}", e.Message);
             }
 
             return allowed;
@@ -99,10 +116,9 @@ namespace ClientApp
             this.Close();
         }
 
-        public void SendPerms(string user)
+        public void SendUser(string user)
         {
 
         }
-
     }
 }

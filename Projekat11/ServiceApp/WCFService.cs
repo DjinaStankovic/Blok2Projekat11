@@ -13,11 +13,13 @@ namespace ServiceApp
 {
     public class WCFService : IWCFService
     {
-        public static List<string[]> PermList = new List<string[]>();
-        
+        public List<string[]> PermList = new List<string[]>();
+        public string User = String.Empty;
 
-        public bool CreateFile(string fileName,string user)
-        {       
+        public bool CreateFile(string fileName)
+        {
+
+            
             if (CheckRole(RolesConfiguration.Permissions.CreateFile.ToString()))
             {
                 string path = @"C:\Files\" + fileName + ".txt";
@@ -45,13 +47,13 @@ namespace ServiceApp
             }
             else
             {
-                Audit.CreateFailed(user);
+                Audit.CreateFailed(User);
                 return false;
             }
            
         }
 
-        public bool DeleteFile(string fileName,string user)
+        public bool DeleteFile(string fileName)
         {
             if (CheckRole(RolesConfiguration.Permissions.DeleteFile.ToString()))
             {
@@ -78,51 +80,13 @@ namespace ServiceApp
             }
             else
             {
-                //Audit.DeleteFailed(Thread.CurrentPrincipal.Identity.Name);
-                Audit.DeleteFailed(user);
+                Audit.DeleteFailed(User);
                 return false;
 
             }
         }
 
-        public bool WriteInFile(string fileName, string content,string user)
-        {
-            if (CheckRole(RolesConfiguration.Permissions.WriteInFile.ToString()))
-            {
-
-                string path = @"C:\Files\" + fileName + ".txt";
-                try
-                {
-                    if (File.Exists(path))
-                    {
-
-                        Console.WriteLine("Uspjesno pisanje u fajl.");
-
-                        File.AppendAllText(path, " " + content);
-                        return true;
-                    }
-                    else
-                    {
-                        Console.WriteLine("Fajl sa tim nazivom ne postoji.");
-                        return false;
-                    }
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e.ToString());
-                    return false;
-                }
-
-            }
-            else
-            {
-                //  Audit.WriteInFileFailed(Thread.CurrentPrincipal.Identity.Name);
-                Audit.WriteInFileFailed(user);
-                return false;
-            }
-        }
-
-        public string ReadFromFile(string fileName,string user)
+        public string ReadFromFile(string fileName)
         {
             if (CheckRole(RolesConfiguration.Permissions.ReadFile.ToString()))
             {
@@ -154,22 +118,23 @@ namespace ServiceApp
             }
             else
             {
-                Audit.ReadFromFileFailed(user);
-                return "Neuspjesno citanje";
+                Audit.ReadFromFileFailed(User);
+                return "Neuspesno citanje";
             }
 
         }
         
-        public void SendPerms(string user)
+        public void SendUser(string user)
         {
+            this.User = user;
             string[] names = null;
             string[] groups = null;
-            PermList = new List<string[]>();
+            string userCN = String.Format("CN={0}", user);
             List<X509Certificate2> certCollection = CertificationManager.GetCertificateFromStorage(StoreName.My, StoreLocation.LocalMachine);
             foreach (X509Certificate2 cert in certCollection)
             {
                 names = cert.Subject.Split('_');
-                if (names[0] == user)
+                if (names[0] == userCN)
                 {
                     int size = names.Count() - 2;
                     groups = new string[size];
@@ -182,6 +147,7 @@ namespace ServiceApp
 
             }
 
+            PermList.Clear();
             foreach (string gr in groups)
             {
                 PermList.Add(RolesConfiguration.RolesConfig.GetPermissions(gr));
@@ -190,11 +156,11 @@ namespace ServiceApp
 
         public bool CheckRole(string role)
         {
-            foreach (string[] gr in PermList)
+            foreach(string[] gr in PermList)
             {
-                foreach (string a in gr)
+                foreach(string a in gr)
                 {
-                    if (a == role)
+                    if(a==role)
                     {
                         return true;
                     }
@@ -204,5 +170,43 @@ namespace ServiceApp
         }
 
 
+
+        public bool WriteInFile(string fileName, string content)
+        {
+            if (CheckRole(RolesConfiguration.Permissions.WriteInFile.ToString()))
+            {
+
+                string path = @"C:\Files\" + fileName + ".txt";
+                try
+                {
+                    if (File.Exists(path))
+                    {
+
+                        Console.WriteLine("Uspjesno pisanje u fajl.");
+
+                        File.AppendAllText(path, " " + content);
+                        return true;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Fajl sa tim nazivom ne postoji.");
+                        return false;
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.ToString());
+                    return false;
+                }
+
+            }
+            else
+            {
+                Audit.WriteInFileFailed(User);
+                return false;
+            }
+        }
+       
+        
     }
 }

@@ -20,17 +20,37 @@ namespace SecurityManager
                 certCollection.Add(cert);
             }
 
-            /// Check whether the subjectName of the certificate is exactly the same as the given "subjectName"
-            //foreach (X509Certificate2 c in certCollection)
-            //{
-            //    if (c.SubjectName.Name.Equals(string.Format("CN={0}", subjectName)))
-            //    {
-            //        return c;
-            //    }
-            //}
-
+            
+            
             return certCollection;
             
+        }
+
+        public static X509Certificate2 GetSingleCertificate(StoreName storeName,StoreLocation storeLocation,string user)
+        {
+            string userCN = String.Format("CN={0}", user);
+            X509Store store = new X509Store(storeName, storeLocation);
+            store.Open(OpenFlags.ReadOnly);
+            X509Certificate2 certificate = new X509Certificate2();
+            List<X509Certificate2> certCollection = new List<X509Certificate2>();
+            foreach (var cert in store.Certificates)
+            {
+                certCollection.Add(cert);
+            }
+
+            foreach (X509Certificate2 cert in certCollection)
+            {
+                string[] names = cert.Subject.Split('_');
+
+                if (names[0] == userCN)
+                {
+                    certificate = cert;
+                    break;
+                }
+
+             
+            }
+            return certificate;
         }
     }
 }
