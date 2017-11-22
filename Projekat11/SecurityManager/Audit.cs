@@ -11,7 +11,6 @@ namespace SecurityManager
     {
         private  EventLog customLog = null;
         private string logName = String.Empty;
-
  
         public Audit(string LogName,string SourceName)
         {
@@ -23,10 +22,8 @@ namespace SecurityManager
                 {
                     EventLog.CreateEventSource(SourceName, LogName);
                 }
-               
+              
                 customLog = new EventLog(LogName, Environment.MachineName, SourceName);
-
-
             }
             catch (Exception e)
             {
@@ -35,60 +32,42 @@ namespace SecurityManager
             }
         }
 
-
         public  void CreateFailed(string userName)
         {
 
             if (customLog != null)
             {
-
-                string message = String.Format("{0} korisnik nema permisiju da kreira fajl!", userName);
+                string message = String.Format("{0} doesn't have a permissions to create a file!", userName);
                 customLog.WriteEntry(message, EventLogEntryType.Error);
-                ////////////////////////EventLogEntry a = customLog.Entries[customLog.Entries.Count - 1];
-                ////////////////////////int aa = 3;
             }
-
         }
 
         public void DeleteFailed(string userName)
         {
             if (customLog != null)
             {
-                string message = String.Format("{0} nema permisiju da obrise fajl!", userName);
+                string message = String.Format("{0} doesn't have a permissions to delete a file!", userName);
                 customLog.WriteEntry(message, EventLogEntryType.Error);
             }
-
         }
 
-
-
-
-        public void WriteInFileFailed(string user)
+        public void WriteInFileFailed(string userName)
         {
-
             if (customLog != null)
             {
-                string message = String.Format("{0} nema permisiju da upisuje u fajl!",user );
+                string message = String.Format("{0} doesn't have the permissions to write to the file!", userName );
                 customLog.WriteEntry(message, EventLogEntryType.Error);
             }
-
         }
-
 
         public void ReadFromFileFailed(string userName)
         {
-
             if (customLog != null)
             {
-                string message = String.Format("{0} nema permisiju da iscitava iz fajla!", userName);
-                customLog.WriteEntry(message, EventLogEntryType.Error);
-                
+                string message = String.Format("{0} doesn't have the permissions to read from the file!", userName);
+                customLog.WriteEntry(message, EventLogEntryType.Error);      
             }
-
         }
-
-
-
 
         public void Dispose()
         {
@@ -98,6 +77,6 @@ namespace SecurityManager
                 customLog = null;
             }
         }
-    }
 
+    }
 }

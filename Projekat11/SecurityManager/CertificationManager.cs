@@ -20,10 +20,7 @@ namespace SecurityManager
                 certCollection.Add(cert);
             }
 
-            
-            
-            return certCollection;
-            
+            return certCollection;          
         }
 
         public static X509Certificate2 GetSingleCertificate(StoreName storeName,StoreLocation storeLocation,string user)
@@ -46,11 +43,10 @@ namespace SecurityManager
                 {
                     certificate = cert;
                     break;
-                }
-
-             
+                }      
             }
             return certificate;
         }
+
     }
 }

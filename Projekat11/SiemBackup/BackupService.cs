@@ -11,8 +11,6 @@ namespace SiemBackup
 {
     public class BackupService : iBackupService
     {
-        
-        
         public void LogChanged(string LogName, EventLogEntry entry)
         {
             switch (LogName)
@@ -26,8 +24,7 @@ namespace SiemBackup
                 case "ThirdLog":
                     Program.backupLog3.WriteEntry(entry.Message,EventLogEntryType.Error);
                     break;
-            }
-        
+            }  
         }
 
         public  EventLog CreateLog(string logName, string sourceName)
@@ -36,15 +33,12 @@ namespace SiemBackup
 
             try
             {
-
                 if (!EventLog.SourceExists(sourceName))
                 {
                     EventLog.CreateEventSource(sourceName, logName);
                 }
 
                 ev = new EventLog(logName, Environment.MachineName, sourceName);
-
-
             }
             catch (Exception e)
             {
@@ -53,5 +47,6 @@ namespace SiemBackup
             }
             return ev;
         }
+
     }
 }

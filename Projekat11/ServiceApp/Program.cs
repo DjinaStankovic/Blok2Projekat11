@@ -16,9 +16,9 @@ namespace ServiceApp
     {
         public static string logName = null;
         public static string logSourceName = null;
+
         static void Main(string[] args)
-        {
-            
+        {       
             string servNameCrt = "wcfservice";
             NetTcpBinding binding = new NetTcpBinding();
             binding.Security.Transport.ClientCredentialType = TcpClientCredentialType.Certificate;
@@ -43,5 +43,6 @@ namespace ServiceApp
 
             host.Close();
         }
+
     }
 }

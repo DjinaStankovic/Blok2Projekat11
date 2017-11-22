@@ -13,6 +13,6 @@ namespace Common
     {
         [OperationContract]
         void LogChanged(string LogName, EventLogEntry entry);
-
     }
+
 }

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.ServiceModel;
@@ -12,30 +13,53 @@ using System.Threading.Tasks;
 namespace ClientApp
 {
     class Program
-    {
-       
+    {      
         public static string user;
+
         static void Main(string[] args)
-        {
-           
+        {     
             string srvCertCN = "wcfservice";
-            string input;
             string fileName;
             string content;
-            Console.WriteLine("Choose account:");
-            Console.WriteLine("1. Client1");
-            Console.WriteLine("2. Client2");
-            Console.WriteLine("3. Client3");
-            int izbor = Convert.ToInt32(Console.ReadLine());
-            user = LoggedUser(izbor);
+            int choice = 0;
+            int input = 0;
+            bool account = false;
+            bool options = false;
 
-           
+            do
+            {
+                do
+                {
+                    Console.WriteLine("\n----Choose account-------");
+                    Console.WriteLine("1. Client1(admins group)");
+                    Console.WriteLine("2. Client2(writers group)");
+                    Console.WriteLine("3. Client3(readers group)");
+                    Console.WriteLine("-Your choice: ");
+                    try
+                    {
+                        choice = Convert.ToInt32(Console.ReadLine());
+
+                        if (choice < 1 || choice > 3)
+                            Console.WriteLine(">> Enter only the numbers: 1, 2 or 3 !");
+
+                        user = LoggedUser(choice);
+                        account = true;
+                    }
+                    catch
+                    {
+                        Console.WriteLine(">> Error! You need to enter the number!");
+                        account = false;
+                    }
+
+                    Console.WriteLine("------------------------------------------");
+                } while (choice < 1 || choice > 3);     
+            } while (!account);    
 
             NetTcpBinding binding = new NetTcpBinding();
             binding.Security.Transport.ClientCredentialType = TcpClientCredentialType.Certificate;
-            string mach = "localhost";
+            string machine = "localhost";
             X509Certificate2 srvCert = CertificationManager.GetSingleCertificate(StoreName.My, StoreLocation.LocalMachine, srvCertCN);
-            EndpointAddress address = new EndpointAddress(new Uri(String.Format("net.tcp://{0}:202/WCFService",mach)),
+            EndpointAddress address = new EndpointAddress(new Uri(String.Format("net.tcp://{0}:202/WCFService", machine)),
                                       new X509CertificateEndpointIdentity(srvCert));
 
             using (WCFClient proxy = new WCFClient(binding, address))
@@ -43,68 +67,103 @@ namespace ClientApp
 
                 while (true)
                 {
-                    Console.WriteLine("\n-------OPCIJE-------");
-                    Console.WriteLine("1.Kreiranje fajla.");
-                    Console.WriteLine("2.Brisanje fajla.");
-                    Console.WriteLine("3.Citanje iz fajla.");
-                    Console.WriteLine("4.Upis u fajl.");
-                    Console.WriteLine("Vas izbor je: ");
-                    input = Console.ReadLine();
-                    Console.WriteLine("---------------------");
-                    
-                    switch (input)
+                    do
                     {
-                        case "1":
-                            Console.WriteLine("Unesite naziv fajla koji zelite da kreirate: ");
-                            fileName = Console.ReadLine();
-                            proxy.CreateFile(fileName);
-                            break;
-                        case "2":
-                            Console.WriteLine("Unesite naziv fajla za brisanje: ");
-                            fileName = Console.ReadLine();
-                            proxy.DeleteFile(fileName);
-                            break;
-                        case "3":
-                            Console.WriteLine("Unesite naziv fajla koji zelite da procitate: ");
-                            fileName = Console.ReadLine();
-                            proxy.ReadFromFile(fileName);
-                            break;
-                        case "4":
-                            Console.WriteLine("Unesite naziv fajla koji zelite da modifikujete: ");
-                            fileName = Console.ReadLine();
-                            Console.WriteLine("Unesite sadrzaj koji zelite da upisete u fajl: ");
-                            content = Console.ReadLine();
-                            proxy.WriteInFile(fileName, content);
-                            break;
-                        default:
-                            break;
+                        Console.WriteLine("\n----Options-------");
+                        Console.WriteLine("1. Create file.");
+                        Console.WriteLine("2. Write in file.");
+                        Console.WriteLine("3. Read from file.");
+                        Console.WriteLine("4. Delete file.");
+                        Console.WriteLine("-Your choice: ");
+                        try
+                        {
+                            input = Convert.ToInt32(Console.ReadLine());
 
-                    }
+                            if (input < 1 || input > 4)
+                                Console.WriteLine(">> Enter only the numbers: 1, 2, 3 or 4 !");
 
+                            Console.WriteLine("------------------------------------------------");
+
+                            switch (input)
+                            {
+                                case 1:
+                                    Console.WriteLine("-Enter the name of the file you want to create: ");
+                                    fileName = Console.ReadLine();
+                                    proxy.CreateFile(fileName);
+                                    break;
+                                case 2:
+                                    bool fileExists = false;
+                                    Console.WriteLine("-Enter the name of the file you want to modify: ");
+                                    fileName = Console.ReadLine();
+                                    fileExists = FileExists(fileName);
+                                    if (fileExists)
+                                    {
+                                        Console.WriteLine("-Enter content: ");
+                                        content = Console.ReadLine();
+                                        proxy.WriteInFile(fileName, content);
+                                    }
+                                    break;
+                                case 3:
+                                    Console.WriteLine("-Enter the name of the file you want to read: ");
+                                    fileName = Console.ReadLine();
+                                    proxy.ReadFromFile(fileName);
+                                    break;
+                                case 4:
+                                    Console.WriteLine("-Enter the name of the file you want to delete: ");
+                                    fileName = Console.ReadLine();
+                                    proxy.DeleteFile(fileName);
+                                    break;
+                                default:
+                                    break;
+                            }
+
+                            options = true;
+                        }
+                        catch
+                        {
+                            Console.WriteLine(">> Error! You need to enter the number!");
+                            options = false;
+                        }
+
+                        Console.WriteLine("------------------------------------------------");
+                    } while (!options);
+                    
                 }
-
             }
-
-           
+       
         }
-        public static string LoggedUser(int a)
+
+        public static string LoggedUser(int selectedUser)
         {
-            string ret = String.Empty;
-            switch (a)
+            string user = String.Empty;
+            switch (selectedUser)
             {
                 case 1:
-                    ret = "wcfclient1";
+                    user = "wcfclient1";
                     break;
                 case 2:
-                    ret = "wcfclient2";
+                    user = "wcfclient2";
                     break;
                 case 3:
-                    ret = "wcfclient3";
+                    user = "wcfclient3";
                     break;
             }
-            return ret;
+            return user;
         }
 
+        public static bool FileExists(string fileName)
+        {
+            string path = @"C:\Files\" + fileName + ".txt";
+            if (!File.Exists(path))
+            {
+                Console.WriteLine(">> File doesn't exist!");
+                return false;
+            } 
+            else
+            {
+                return true;
+            }
+        }
         
     }
 }

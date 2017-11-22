@@ -31,8 +31,7 @@ namespace SecurityManager
             static string[] Empty = new string[] { };
 
             public static string[] GetPermissions(string role)
-            {
-                
+            {            
                 switch (role)
                 {
                     case "admins": return AdminsPermissions;
@@ -42,5 +41,6 @@ namespace SecurityManager
                 }
             }
         }
+
     }
 }

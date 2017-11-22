@@ -14,11 +14,11 @@ namespace SecurityManager
         {
             string name = certificate.Subject.ToString();
             string[] parts = name.Split('_');
-            string a = parts[parts.Length - 1];
+            string company = parts[parts.Length - 1];
 
-            if (a != "MainCertCA")
+            if (company != "MainCertCA")
             {
-                throw new Exception("Nije validan izdavalac sertifikata");
+                throw new Exception("The certificate issuer is not valid!");
             }
         }
     }

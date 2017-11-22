@@ -23,4 +23,5 @@ namespace Common
         [OperationContract]
         void SendUser(string user);
     }
+
 }

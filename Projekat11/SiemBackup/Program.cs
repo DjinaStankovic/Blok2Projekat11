@@ -27,10 +27,10 @@ namespace SiemBackup
             ServiceHost host = new ServiceHost(typeof(BackupService));
             host.AddServiceEndpoint(typeof(iBackupService), binding, address);
             host.Open();
-            Console.WriteLine("Pokrenut backup servis!");
+            Console.WriteLine("SiemBackup is opened. Press <enter> to finish...");
             Console.ReadLine();
             host.Close();
-
         }
+
     }
 }
