@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SecurityManager", "Security
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SIEM", "SIEM\SIEM.csproj", "{F2F0DABD-C250-42D5-8486-7D684E890CB0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SiemBackup", "SiemBackup\SiemBackup.csproj", "{DBC2A293-B722-4C89-95D2-1DF7925905CD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{F2F0DABD-C250-42D5-8486-7D684E890CB0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F2F0DABD-C250-42D5-8486-7D684E890CB0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F2F0DABD-C250-42D5-8486-7D684E890CB0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DBC2A293-B722-4C89-95D2-1DF7925905CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DBC2A293-B722-4C89-95D2-1DF7925905CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DBC2A293-B722-4C89-95D2-1DF7925905CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DBC2A293-B722-4C89-95D2-1DF7925905CD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

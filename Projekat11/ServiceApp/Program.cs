@@ -22,9 +22,7 @@ namespace ServiceApp
             string servNameCrt = "wcfservice";
             NetTcpBinding binding = new NetTcpBinding();
             binding.Security.Transport.ClientCredentialType = TcpClientCredentialType.Certificate;
-
             string port = "202"; //Ovaj port mijenja sourcename!
-            Console.WriteLine("mrs");
             string MachineName = Environment.MachineName;
             string[] parts = MachineName.Split('-');
             string MachineNameSplit = String.Format("{0}{1}", parts[0], parts[1]);

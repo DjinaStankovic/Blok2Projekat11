@@ -1,8 +1,10 @@
-﻿using System;
+﻿using Common;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Eventing.Reader;
 using System.Linq;
+using System.ServiceModel;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,7 +13,7 @@ namespace SIEM
 {
     public class Program
     {
-      
+        public static iBackupService proxy = null;
         static void Main(string[] args)
         {
             EventLog ev1 = null;
@@ -21,6 +23,11 @@ namespace SIEM
             EventLog customLog1 = null;
             EventLog customLog2 = null;
             EventLog customLog3 = null;
+
+            string port = "202";
+            string address = String.Format("net.tcp://localhost:{0}/BackupService", port);
+            ChannelFactory<iBackupService> factory = new ChannelFactory<iBackupService>(new NetTcpBinding(), new EndpointAddress(address));
+            proxy = factory.CreateChannel();
 
             Console.WriteLine("Enter machine1 name( in format P04-X): ");
             string machineName1 = Console.ReadLine();
@@ -57,6 +64,7 @@ namespace SIEM
             
             }
 
+
          
         }
         static void ReadEventLog(string eventLogName,string machineName)
@@ -91,6 +99,8 @@ namespace SIEM
                         EventLogEntry CurrentEntry = ev.Entries[i];
                         custom.WriteEntry(CurrentEntry.Message, EventLogEntryType.Error);
                         Console.WriteLine("Machine: {0} \nNew message:{1} ",ev.MachineName,CurrentEntry.Message);
+                        proxy.LogChanged(custom.Log, CurrentEntry);
+                        
                     }
                 }
                
@@ -120,6 +130,8 @@ namespace SIEM
             }
             return ev;
         }
+
+        
     
 
 

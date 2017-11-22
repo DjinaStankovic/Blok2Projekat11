@@ -33,7 +33,7 @@ namespace ClientApp
 
             NetTcpBinding binding = new NetTcpBinding();
             binding.Security.Transport.ClientCredentialType = TcpClientCredentialType.Certificate;
-            string mach = "P04-14";
+            string mach = "localhost";
             X509Certificate2 srvCert = CertificationManager.GetSingleCertificate(StoreName.My, StoreLocation.LocalMachine, srvCertCN);
             EndpointAddress address = new EndpointAddress(new Uri(String.Format("net.tcp://{0}:202/WCFService",mach)),
                                       new X509CertificateEndpointIdentity(srvCert));
