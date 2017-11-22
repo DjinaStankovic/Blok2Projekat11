@@ -20,7 +20,7 @@ namespace ClientApp
         {     
             string srvCertCN = "wcfservice";
             string fileName;
-            string content;
+            string content = null;
             int choice = 0;
             int input = 0;
             bool account = false;
@@ -100,8 +100,9 @@ namespace ClientApp
                                     {
                                         Console.WriteLine("-Enter content: ");
                                         content = Console.ReadLine();
-                                        proxy.WriteInFile(fileName, content);
+                                      
                                     }
+                                    proxy.WriteInFile(fileName, content);
                                     break;
                                 case 3:
                                     Console.WriteLine("-Enter the name of the file you want to read: ");
