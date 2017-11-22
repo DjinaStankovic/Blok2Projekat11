@@ -25,7 +25,7 @@ namespace SecurityManager
 
         public class RolesConfig
         {
-            static string[] AdminsPermissions = new string[] { Permissions.CreateFile.ToString(), Permissions.DeleteFile.ToString(), Permissions.ReadFile.ToString() };
+            static string[] AdminsPermissions = new string[] { Permissions.CreateFile.ToString(), Permissions.DeleteFile.ToString(), Permissions.ReadFile.ToString()};
             static string[] ReadersPermissions = new string[] { Permissions.ReadFile.ToString() };
             static string[] WritersPermissions = new string[] { Permissions.WriteInFile.ToString(), Permissions.ReadFile.ToString() };
             static string[] Empty = new string[] { };

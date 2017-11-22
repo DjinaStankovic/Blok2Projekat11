@@ -15,113 +15,127 @@ namespace ServiceApp
     {
         public List<string[]> PermList = new List<string[]>();
         public string User = String.Empty;
+        public readonly object LockObj = new object();
 
         public bool CreateFile(string fileName)
         {
-
-            
-            if (CheckRole(RolesConfiguration.Permissions.CreateFile.ToString()))
+            lock (LockObj)
             {
-                string path = @"C:\Files\" + fileName + ".txt";
-                try
+                if (CheckRole(RolesConfiguration.Permissions.CreateFile.ToString()))
                 {
-                    if (File.Exists(path))
+
+                    string path = @"C:\Files\" + fileName + ".txt";
+                    try
                     {
-                        Console.WriteLine("Fajl sa tim nazivom vec postoji.\n");
-                        return false;
-                    }
-                    else
-                    {
-                        using (FileStream fs = File.Create(path))
+                        if (File.Exists(path))
                         {
-                            Console.WriteLine("Uspjesno ste kreirali fajl na lokaciji: " + path);
-                            return true;
+                            Console.WriteLine("Fajl sa tim nazivom vec postoji.\n");
+                            return false;
+                        }
+                        else
+                        {
+                            using (FileStream fs = File.Create(path))
+                            {
+                                Console.WriteLine("Uspjesno ste kreirali fajl na lokaciji: " + path);
+                                return true;
+                            }
                         }
                     }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e.ToString());
+                        return false;
+                    }
                 }
-                catch (Exception e)
+
+                else
                 {
-                    Console.WriteLine(e.ToString());
+                    Audit a = new Audit(Program.logName, Program.logSourceName);
+                    a.CreateFailed(User);
                     return false;
+
                 }
             }
-            else
-            {
-                Audit.CreateFailed(User);
-                return false;
-            }
-           
+
         }
+        
 
         public bool DeleteFile(string fileName)
         {
-            if (CheckRole(RolesConfiguration.Permissions.DeleteFile.ToString()))
+            lock (LockObj)
             {
-                string path = @"C:\Files\" + fileName + ".txt";
-                try
+                if (CheckRole(RolesConfiguration.Permissions.DeleteFile.ToString()))
                 {
-                    if (File.Exists(path))
+                    string path = @"C:\Files\" + fileName + ".txt";
+                    try
                     {
-                        File.Delete(path);
-                        Console.WriteLine("Uspjesno ste obrisali fajl na lokaciji " + path);
-                        return true;
+                        if (File.Exists(path))
+                        {
+                            File.Delete(path);
+                            Console.WriteLine("Uspjesno ste obrisali fajl na lokaciji " + path);
+                            return true;
+                        }
+                        else
+                        {
+                            Console.WriteLine("Fajl sa tim nazivom ne postoji.\n");
+                            return false;
+                        }
                     }
-                    else
+                    catch (Exception e)
                     {
-                        Console.WriteLine("Fajl sa tim nazivom ne postoji.\n");
+                        Console.WriteLine(e.ToString());
                         return false;
                     }
                 }
-                catch (Exception e)
+                else
                 {
-                    Console.WriteLine(e.ToString());
+                    Audit a = new Audit(Program.logName, Program.logSourceName);
+                    a.DeleteFailed(User);
                     return false;
-                }
-            }
-            else
-            {
-                Audit.DeleteFailed(User);
-                return false;
 
+                }
             }
         }
 
         public string ReadFromFile(string fileName)
         {
-            if (CheckRole(RolesConfiguration.Permissions.ReadFile.ToString()))
+            lock (LockObj)
             {
-                string path = @"C:\Files\" + fileName + ".txt";
-                try
+                if (CheckRole(RolesConfiguration.Permissions.ReadFile.ToString()))
                 {
-                    if (File.Exists(path))
+                    string path = @"C:\Files\" + fileName + ".txt";
+                    try
                     {
-                        var content = string.Empty;
-                        Console.WriteLine("Uspjesno iscitavanje fajla.");
-                        using (StreamReader reader = new StreamReader(path))
+                        if (File.Exists(path))
                         {
-                            content = reader.ReadToEnd();
-                            reader.Close();
+                            var content = string.Empty;
+                            Console.WriteLine("Uspjesno iscitavanje fajla.");
+                            using (StreamReader reader = new StreamReader(path))
+                            {
+                                content = reader.ReadToEnd();
+                                reader.Close();
+                            }
+                            return content;
                         }
-                        return content;
+                        else
+                        {
+                            Console.WriteLine("Fajl sa tim nazivom ne postoji.");
+                            return "Neuspjesno citanje iz fajla!.";
+                        }
                     }
-                    else
+                    catch (Exception e)
                     {
-                        Console.WriteLine("Fajl sa tim nazivom ne postoji.");
-                        return "Neuspjesno citanje iz fajla!.";
+                        Console.WriteLine(e.ToString());
+                        return e.ToString();
                     }
                 }
-                catch (Exception e)
+                else
                 {
-                    Console.WriteLine(e.ToString());
-                    return e.ToString();
+                    Audit a = new Audit(Program.logName, Program.logSourceName);
+                    a.ReadFromFileFailed(User);
+                    return "Neuspesno citanje";
                 }
             }
-            else
-            {
-                Audit.ReadFromFileFailed(User);
-                return "Neuspesno citanje";
-            }
-
         }
         
         public void SendUser(string user)
@@ -173,37 +187,41 @@ namespace ServiceApp
 
         public bool WriteInFile(string fileName, string content)
         {
-            if (CheckRole(RolesConfiguration.Permissions.WriteInFile.ToString()))
+            lock (LockObj)
             {
-
-                string path = @"C:\Files\" + fileName + ".txt";
-                try
+                if (CheckRole(RolesConfiguration.Permissions.WriteInFile.ToString()))
                 {
-                    if (File.Exists(path))
+
+                    string path = @"C:\Files\" + fileName + ".txt";
+                    try
                     {
+                        if (File.Exists(path))
+                        {
 
-                        Console.WriteLine("Uspjesno pisanje u fajl.");
+                            Console.WriteLine("Uspjesno pisanje u fajl.");
 
-                        File.AppendAllText(path, " " + content);
-                        return true;
+                            File.AppendAllText(path, " " + content);
+                            return true;
+                        }
+                        else
+                        {
+                            Console.WriteLine("Fajl sa tim nazivom ne postoji.");
+                            return false;
+                        }
                     }
-                    else
+                    catch (Exception e)
                     {
-                        Console.WriteLine("Fajl sa tim nazivom ne postoji.");
+                        Console.WriteLine(e.ToString());
                         return false;
                     }
+
                 }
-                catch (Exception e)
+                else
                 {
-                    Console.WriteLine(e.ToString());
+                    Audit a = new Audit(Program.logName, Program.logSourceName);
+                    a.WriteInFileFailed(User);
                     return false;
                 }
-
-            }
-            else
-            {
-                Audit.WriteInFileFailed(User);
-                return false;
             }
         }
        

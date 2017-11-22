@@ -1,21 +1,23 @@
 ﻿using SecurityManager;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.ServiceModel;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace ClientApp
 {
     class Program
     {
-       // public static List<string[]> permissions;
+       
         public static string user;
         static void Main(string[] args)
         {
-
+           
             string srvCertCN = "wcfservice";
             string input;
             string fileName;
@@ -27,10 +29,12 @@ namespace ClientApp
             int izbor = Convert.ToInt32(Console.ReadLine());
             user = LoggedUser(izbor);
 
+           
+
             NetTcpBinding binding = new NetTcpBinding();
             binding.Security.Transport.ClientCredentialType = TcpClientCredentialType.Certificate;
             X509Certificate2 srvCert = CertificationManager.GetSingleCertificate(StoreName.My, StoreLocation.LocalMachine, srvCertCN);
-            EndpointAddress address = new EndpointAddress(new Uri("net.tcp://localhost:1/WCFService"),
+            EndpointAddress address = new EndpointAddress(new Uri("net.tcp://localhost:202/WCFService"),
                                       new X509CertificateEndpointIdentity(srvCert));
 
             using (WCFClient proxy = new WCFClient(binding, address))
@@ -45,7 +49,7 @@ namespace ClientApp
                     Console.WriteLine("4.Upis u fajl.");
                     Console.WriteLine("Vas izbor je: ");
                     input = Console.ReadLine();
-                    Console.WriteLine("--------------------");
+                    Console.WriteLine("---------------------");
                     
                     switch (input)
                     {
@@ -99,5 +103,7 @@ namespace ClientApp
             }
             return ret;
         }
+
+        
     }
 }

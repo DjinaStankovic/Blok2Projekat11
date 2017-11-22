@@ -9,20 +9,21 @@ namespace SecurityManager
 {
     public class Audit : IDisposable
     {
-        private static EventLog customLog = null;
-        const string SourceName = "SecurtiyManagerr.Audit";
-        const string LogName = "NoviLog";
+        private  EventLog customLog = null;
+        private string logName = String.Empty;
 
-        static Audit()
+ 
+        public Audit(string LogName,string SourceName)
         {
             try
             {
+                logName = LogName;
 
                 if (!EventLog.SourceExists(SourceName))
                 {
                     EventLog.CreateEventSource(SourceName, LogName);
                 }
-
+               
                 customLog = new EventLog(LogName, Environment.MachineName, SourceName);
 
 
@@ -35,7 +36,7 @@ namespace SecurityManager
         }
 
 
-        public static void CreateFailed(string userName)
+        public  void CreateFailed(string userName)
         {
 
             if (customLog != null)
@@ -43,11 +44,13 @@ namespace SecurityManager
 
                 string message = String.Format("{0} korisnik nema permisiju da kreira fajl!", userName);
                 customLog.WriteEntry(message, EventLogEntryType.Error);
+                ////////////////////////EventLogEntry a = customLog.Entries[customLog.Entries.Count - 1];
+                ////////////////////////int aa = 3;
             }
 
         }
 
-        public static void DeleteFailed(string userName)
+        public void DeleteFailed(string userName)
         {
             if (customLog != null)
             {
@@ -60,7 +63,7 @@ namespace SecurityManager
 
 
 
-        public static void WriteInFileFailed(string user)
+        public void WriteInFileFailed(string user)
         {
 
             if (customLog != null)
@@ -72,13 +75,14 @@ namespace SecurityManager
         }
 
 
-        public static void ReadFromFileFailed(string userName)
+        public void ReadFromFileFailed(string userName)
         {
 
             if (customLog != null)
             {
                 string message = String.Format("{0} nema permisiju da iscitava iz fajla!", userName);
                 customLog.WriteEntry(message, EventLogEntryType.Error);
+                
             }
 
         }
