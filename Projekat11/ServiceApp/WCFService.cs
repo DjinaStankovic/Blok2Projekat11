@@ -15,7 +15,7 @@ namespace ServiceApp
     {
         public List<string[]> PermList = new List<string[]>();
         public string User = String.Empty;
-        public readonly object LockObj = new object();
+        public static readonly object LockObj = new object();
 
         public bool CreateFile(string fileName)
         {

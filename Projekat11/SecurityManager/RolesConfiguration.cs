@@ -16,13 +16,6 @@ namespace SecurityManager
             ReadFile = 3
         }
 
-        public enum Roles
-        {
-            Admins = 0,
-            Readers = 1,
-            Writers = 2,
-        }
-
         public class RolesConfig
         {
             static string[] AdminsPermissions = new string[] { Permissions.CreateFile.ToString(), Permissions.DeleteFile.ToString(), Permissions.ReadFile.ToString()};
